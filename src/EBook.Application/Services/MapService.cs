@@ -101,6 +101,7 @@ public static class MapService
             Published = book.Published,
             Pages = book.Pages,
             BookUrl = book.BookUrl,
+            ThumbnaliUrl = book.ThumbnaliUrl,
         };
     }
 
@@ -115,6 +116,7 @@ public static class MapService
             Published = book.Published,
             Pages = book.Pages,
             BookUrl = book.BookUrl,
+            ThumbnaliUrl = book.ThumbnaliUrl,
             Reviews = book.Reviews == null ? new List<ReviewGetDto>() : book.Reviews.Select(ConvertToReviewGetDto).ToList()
         };
     }

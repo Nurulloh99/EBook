@@ -8,59 +8,61 @@ public static class AuthEndpoints
 {
     public static void MapAuthEndpoints(this WebApplication app)
     {
-        var userGroup = app.MapGroup("auth")
+        var userGroup = app.MapGroup("/api/auth")
             .WithTags("Auth Management");
 
-
-        userGroup.MapPost("SignUp",
+        // ---------- SignUp ----------
+        userGroup.MapPost("/signup",
         async (UserCreateDto userDto, [FromServices] IAuthService authService) =>
         {
             var result = await authService.SignUpUserAsync(userDto);
-            return Results.Ok(result);
+            return Results.Created($"/api/auth/users/{result}", result);
         })
-            .WithName("SignUp");
+        .WithName("SignUp");
 
-
+        // ---------- Send verification code ----------
         userGroup.MapPost("/send-code",
             async (string email, [FromServices] IAuthService _service) =>
             {
                 await _service.EailCodeSender(email);
+                return Results.Accepted();
             })
-            .WithName("SendCode");
+        .WithName("SendCode");
 
-
+        // ---------- Confirm verification code ----------
         userGroup.MapPost("/confirm-code",
             async (string code, string email, [FromServices] IAuthService _service) =>
             {
                 var res = await _service.ConfirmCode(code, email);
                 return Results.Ok(res);
             })
-            .WithName("ConfirmCode");
+        .WithName("ConfirmCode");
 
-
-        userGroup.MapPost("Login",
-            async (LoginDto userLoginDto, [FromServices] IAuthService authService) => // RefreshToken bolishi kere
+        // ---------- Login ----------
+        userGroup.MapPost("/login",
+            async (LoginDto userLoginDto, [FromServices] IAuthService authService) =>
             {
-                return Results.Ok(await authService.LoginUserAsync(userLoginDto /*refreshToken bolishi kere*/));
+                var token = await authService.LoginUserAsync(userLoginDto);
+                return Results.Ok(token);
             })
-                .WithName("Login");
+        .WithName("Login");
 
-
-        userGroup.MapPut("/refresh-token",
+        // ---------- Refresh Token ----------
+        userGroup.MapPost("/refresh-token",
         async (RefreshRequestDto refresh, [FromServices] IAuthService _service) =>
         {
-            return Results.Ok(await _service.RefreshTokenAsync(refresh));
+            var newTokens = await _service.RefreshTokenAsync(refresh);
+            return Results.Ok(newTokens);
         })
         .WithName("RefreshToken");
 
-
-        userGroup.MapDelete("/log-out",
+        // ---------- Logout ----------
+        userGroup.MapDelete("/logout",
         async (string refreshToken, [FromServices] IAuthService _service) =>
         {
             await _service.LogOut(refreshToken);
-            return Results.Ok();
+            return Results.NoContent();
         })
         .WithName("LogOut");
     }
 }
-

@@ -10,39 +10,21 @@ public static class LanguageEndpoint
 {
     public static void MapLanguageEndpoints(this WebApplication app)
     {
-        var languageGroup = app.MapGroup("/api/language")
+        var languageGroup = app.MapGroup("/api/languages")
             .RequireAuthorization()
             .WithTags("Language Management");
 
-
-        languageGroup.MapPost("/add-language", [Authorize]
-        async (LanguageCreateDto languageCreateDto, [FromServices] ILanguageService _languageService) =>
-        {
-            var languageId = await _languageService.AddLanguageAsync(languageCreateDto);
-            return Results.Ok(languageId);
-        })
-            .WithName("CreateLanguage");
-
-
-        languageGroup.MapDelete("/delete-language", [Authorize]
-        async (long languageId, [FromServices] ILanguageService _languageService) =>
-        {
-            await _languageService.DeleteLanguageAsync(languageId);
-            return Results.Ok(languageId);
-        })
-            .WithName("DeleteLanguage");
-
-
-        languageGroup.MapGet("/get-language-by-id", [Authorize]
+        // GET language by id
+        languageGroup.MapGet("/{languageId:long}", [Authorize]
         async (long languageId, [FromServices] ILanguageService _languageService) =>
         {
             var language = await _languageService.GetLanguageByIdAsync(languageId);
             return Results.Ok(language);
         })
-            .WithName("GetLanguageById");
+        .WithName("GetLanguageById");
 
-
-        languageGroup.MapGet("/get-all-languages", [Authorize]
+        // GET all languages
+        languageGroup.MapGet("/", [Authorize]
         async ([FromServices] ILanguageService _languageService) =>
         {
             var languages = await _languageService.GetAllLanguagesAsync();

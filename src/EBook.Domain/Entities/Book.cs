@@ -10,6 +10,7 @@ public class Book
     public int Pages { get; set; }
 
     public string BookUrl { get; set; }
+    public string ThumbnaliUrl { get; set; }
 
     public long LanguageId { get; set; }
     public Language Language { get; set; }

@@ -28,12 +28,12 @@ builder.ConfigurationJwtAuth();
 var app = builder.Build();
 
 app.MapAuthEndpoints();
-app.MapRoleEndpoints();
 app.MapUserEndpoints();
 app.MapBookEndpoints();
 app.MapGenreEndpoints();
 app.MapLanguageEndpoints();
 app.MapReviewEndpoints();
+app.MapAdminEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

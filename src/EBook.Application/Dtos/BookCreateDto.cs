@@ -10,6 +10,7 @@ public class BookCreateDto
     public DateOnly Published { get; set; }
     public int Pages { get; set; }
     public IFormFile book { get; set; }
+    public IFormFile Thumbnali { get; set; }
 
     public long LanguageId { get; set; }
     public long GenreId { get; set; }

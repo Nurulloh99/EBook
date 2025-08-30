@@ -9,4 +9,5 @@ public class BookGetDto
     public DateOnly Published { get; set; }
     public int Pages { get; set; }
     public string BookUrl { get; set; }
+    public string ThumbnaliUrl { get; set; }
 }

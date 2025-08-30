@@ -4,11 +4,11 @@ using EBook.Application.Dtos;
 using EBook.Application.Dtos.Pagination;
 using EBook.Application.Interfaces;
 using EBook.Application.Services.ServiceInterfaces;
-using EBook.Domain.Entities;
 using EBook.Errors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Net.NetworkInformation;
 
 namespace EBook.Application.Services.ServiceImplementations;
 
@@ -42,6 +42,52 @@ public class BookService : IBookService
         var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
 
         return allowedExtensions.Contains(extension);
+    }
+
+    private bool IsImage(IFormFile file)
+    {
+        var allowedHeaders = new Dictionary<string, byte[]>
+        {
+            { "jpeg", new byte[] { 0xFF, 0xD8, 0xFF } },
+            { "png", new byte[] { 0x89, 0x50, 0x4E, 0x47 } },
+            { "gif", new byte[] { 0x47, 0x49, 0x46, 0x38 } },
+            { "bmp", new byte[] { 0x42, 0x4D } },
+            { "webp", new byte[] { 0x52, 0x49, 0x46, 0x46 } }
+        };
+
+        using var reader = new BinaryReader(file.OpenReadStream());
+        var fileHeader = reader.ReadBytes(4);
+
+        return allowedHeaders.Any(h => fileHeader.Take(h.Value.Length).SequenceEqual(h.Value));
+    }
+
+    public async Task<string> UploadImageToCloudinaryAsync(IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+            throw new ArgumentException("Rasm fayli bo‘lishi shart.");
+
+        if (!IsImage(file))
+            throw new ArgumentException("Faqat rasm fayllar qabul qilinadi.");
+
+        if (file.Length > 5 * 1024 * 1024)
+            throw new ArgumentException("Rasm hajmi 5MB dan oshmasligi kerak.");
+
+        await using var stream = file.OpenReadStream();
+
+        var uploadParams = new ImageUploadParams()
+        {
+            File = new FileDescription(file.FileName, stream),
+            Folder = "photos"
+        };
+
+        var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+
+        if (uploadResult.StatusCode != System.Net.HttpStatusCode.OK)
+        {
+            throw new Exception("Cloudinary upload failed: " + uploadResult.Error?.Message);
+        }
+
+        return uploadResult.SecureUrl.ToString();
     }
 
 
@@ -95,6 +141,7 @@ public class BookService : IBookService
         book.LanguageId = bookCreateDto.LanguageId;
         book.GenreId = bookCreateDto.GenreId;
         book.BookUrl = await UploadBookAsync(bookCreateDto.book);
+        book.ThumbnaliUrl = await UploadImageToCloudinaryAsync(bookCreateDto.Thumbnali);
 
         var bookId = await _bookRepository.InsertBookAsync(book);
 
@@ -179,8 +226,8 @@ public class BookService : IBookService
 
     public async Task<List<BookGetDto>> GetBooksByUserIdAsync(long userId)
     {
-        var result =await _bookRepository.SelectBooksByUserIdAsync(userId);
-        
+        var result = await _bookRepository.SelectBooksByUserIdAsync(userId);
+
         return result.Select(MapService.ConvertToBookGetDto).ToList(); ;
     }
 
