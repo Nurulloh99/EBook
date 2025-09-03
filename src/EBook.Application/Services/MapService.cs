@@ -72,7 +72,7 @@ public static class MapService
         {
             ReviewId = review.ReviewId,
             Content = review.Content,
-            Rating = review.Rating,
+            Rating = review.Rating!.Value,
         };
     }
 

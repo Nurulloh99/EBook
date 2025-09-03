@@ -18,9 +18,6 @@ public static class BookEndpoints
         bookGroup.MapGet("/", [Authorize]
         async (int? skip, int? take, [FromServices] IBookService _bookService, HttpContext context) =>
         {
-            var userId = context.User.FindFirst("UserId")?.Value;
-
-            if (userId is null) throw new ArgumentNullException();
             GetPageModel<BookGetDto> books;
             PageModel pageModel;
             if (skip is null || take is null)
@@ -29,7 +26,7 @@ public static class BookEndpoints
             }
             else
             {
-                pageModel = new PageModel() { Skip = skip.Value, Take = take.Value, UserId = long.Parse(userId) };
+                pageModel = new PageModel() { Skip = skip.Value, Take = take.Value};
                 books = await _bookService.GetAllBooksAsync(pageModel);
             }
             return Results.Ok(books);

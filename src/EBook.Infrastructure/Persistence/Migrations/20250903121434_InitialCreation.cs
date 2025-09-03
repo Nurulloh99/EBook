@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EBook.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InitialCreation : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -114,6 +114,7 @@ namespace EBook.Infrastructure.Persistence.Migrations
                     Published = table.Column<DateOnly>(type: "date", nullable: false),
                     Pages = table.Column<int>(type: "int", nullable: false),
                     BookUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ThumbnaliUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LanguageId = table.Column<long>(type: "bigint", nullable: false),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
                     GenreId = table.Column<long>(type: "bigint", nullable: false)

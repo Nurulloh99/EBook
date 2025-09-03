@@ -28,7 +28,6 @@ public class BookRepository(AppDbContext _appDbContext) : IBookRepository
     public async Task<ICollection<Book>> SelectAllBooksAsync(PageModel? pageModel)
     {
         var books = _appDbContext.Books
-            .Where(c => c.UserId == pageModel.UserId)
             .OrderBy(c => c.BookId)
             .Skip(pageModel.Skip)
             .Take(pageModel.Take);

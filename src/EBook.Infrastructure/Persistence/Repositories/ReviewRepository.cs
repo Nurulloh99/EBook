@@ -43,9 +43,16 @@ public class ReviewRepository(AppDbContext _appDbContext) : IReviewRepository
         return review;
     }
 
+    public async Task<bool> SelectReviewByUserAndBookIdAsync(long bookId, long userId)
+    {
+        return await _appDbContext.Reviews.AnyAsync(x=>x.UserId == userId && x.BookId == bookId);
+    }
+
     public async Task UpdateReviewAsync(Review review)
     {
-        _appDbContext.Reviews.Update(review);
+        _appDbContext.Reviews.Update(review);    
         await _appDbContext.SaveChangesAsync();
     }
 }
+
+

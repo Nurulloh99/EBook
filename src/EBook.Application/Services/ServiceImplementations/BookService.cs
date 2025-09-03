@@ -149,7 +149,7 @@ public class BookService : IBookService
     }
 
 
-    public async Task ChangeBookAsync(long userId, BookGetDto bookUpdateDto)
+    public async Task ChangeBookAsync(long userId, BookUpdateDto bookUpdateDto)
     {
         var book = await _bookRepository.SelectBookByIdAsync(bookUpdateDto.BookId);
 
@@ -164,6 +164,8 @@ public class BookService : IBookService
         book.Description = bookUpdateDto.Description;
         book.Published = bookUpdateDto.Published;
         book.Pages = bookUpdateDto.Pages;
+        book.GenreId = bookUpdateDto.GenreId;
+        book.LanguageId = bookUpdateDto.LanguageId; 
 
         _logger.LogInformation($"Selected Book with ID {bookUpdateDto.BookId} has been CHANGED successfully at {DateTime.Now}");
 
@@ -184,8 +186,6 @@ public class BookService : IBookService
     {
         var allBooks = await _bookRepository.SelectAllBooksAsync(pageModel);
         var items = allBooks.Select(MapService.ConvertToBookGetDto).ToList();
-
-        _logger.LogInformation($"Selected Books have been taken successfully at {DateTime.Now}");
 
         return new GetPageModel<BookGetDto>
         {

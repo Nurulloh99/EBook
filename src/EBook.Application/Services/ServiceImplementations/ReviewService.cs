@@ -14,7 +14,13 @@ public class ReviewService(IReviewRepository _reviewRepository, ILogger<UserServ
     {
         if (reviewCreateDto is null)
             throw new ArgumentNullException($"Review is empty with this name of: {reviewCreateDto} (Service)");
+        var isReviewAdded =await _reviewRepository.SelectReviewByUserAndBookIdAsync(reviewCreateDto.BookId,userId);
+        
         var review = MapService.ConvertToReviewEntity(reviewCreateDto);
+        if (isReviewAdded is true)
+        {
+            //review.Rating = 0;
+        }
         review.UserId = userId;
         return await _reviewRepository.InsertReviewAsync(review);
     }

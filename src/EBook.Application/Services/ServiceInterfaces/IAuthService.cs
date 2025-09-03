@@ -9,5 +9,6 @@ public interface IAuthService
     Task<LoginResponseDto> LoginUserAsync(LoginDto userLoginDto);
     Task<LoginResponseDto> RefreshTokenAsync(RefreshRequestDto request);
     Task EailCodeSender(string email);
+    Task ForgotPassword(string email, string newPassword, string confirmCode);
     Task<bool> ConfirmCode(string userCode, string email);
 }

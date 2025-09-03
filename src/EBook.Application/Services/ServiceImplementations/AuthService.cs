@@ -56,10 +56,31 @@ public class AuthService(IUserRepository _userRepository,
             .SendAsync();
 
         user.Confirmer!.ConfirmingCode = code;
-        user.Confirmer.ExpiredDate = DateTime.UtcNow.AddMinutes(10);
+        user.Confirmer.ExpiredDate = DateTime.Now.AddMinutes(10);
         await _userRepository.UpdateUserAsync(user);
     }
+    public async Task ForgotPassword(string email,string newPassword, string confirmCode)
+    {
+        bool isValid = System.Text.RegularExpressions.Regex.IsMatch(email,@"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$");
+        
+        if (!isValid)
+        {
+            throw new NotAllowedException();
+        }
+        var user = await _userRepository.SelectUserByEmail(email);
+        var code = user.Confirmer!.ConfirmingCode;
+        if (code == null || code != confirmCode || user.Confirmer.ExpiredDate < DateTime.Now)
+        {
+            throw new Exception("Code is incorrect");
+        }
 
+        var taple = PasswordHasher.Hasher(newPassword);
+
+        user.Password = taple.Hash;
+        user.Salt = taple.Salt;
+
+        await _userRepository.UpdateUserAsync(user);
+    }
     public async Task<LoginResponseDto> LoginUserAsync(LoginDto userLoginDto)
     {
         var user = await _userRepository.SelectUserByUserNameAsync(userLoginDto.UserName);
@@ -92,8 +113,7 @@ public class AuthService(IUserRepository _userRepository,
         {
             AccessToken = token,
             RefreshToken = refreshToken,
-            TokenType = "Bearer",
-            Expires = 24
+            UserData = userGetDto,
         };
 
         return loginResponseDto;
@@ -147,8 +167,6 @@ public class AuthService(IUserRepository _userRepository,
         {
             AccessToken = newAccessToken,
             RefreshToken = newRefreshToken,
-            TokenType = "Bearer",
-            Expires = 24
         };
     }
 

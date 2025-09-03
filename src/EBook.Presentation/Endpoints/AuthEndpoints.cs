@@ -10,6 +10,13 @@ public static class AuthEndpoints
     {
         var userGroup = app.MapGroup("/api/auth")
             .WithTags("Auth Management");
+        //forgot password
+        userGroup.MapPost("/forgot-password",
+        async (string email,string newPassword, string confirmCode, IAuthService _service) =>
+        {
+            await _service.ForgotPassword(email,newPassword,confirmCode);
+        })
+        .WithName("ForgotPassword");
 
         // ---------- SignUp ----------
         userGroup.MapPost("/signup",

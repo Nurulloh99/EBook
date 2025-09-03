@@ -82,8 +82,8 @@ public static class AdminEndpoints
         }).DisableAntiforgery()
           .WithName("CreateBook");
 
-        userGroup.MapPatch("/books/{id:long}", [Authorize(Roles = "Admin, SuperAdmin")]
-        async (BookGetDto bookGetDto, [FromServices] IBookService _bookService, HttpContext context) =>
+        userGroup.MapPut("/books/{id:long}", [Authorize(Roles = "Admin, SuperAdmin")]
+        async (BookUpdateDto bookGetDto, [FromServices] IBookService _bookService, HttpContext context) =>
         {
             var userId = context.User.FindFirst("UserId")?.Value;
             if (userId is null) throw new ArgumentNullException();

@@ -4,7 +4,7 @@ public class Review
 {
     public long ReviewId { get; set; }
     public string Content { get; set; }
-    public int Rating { get; set; }   // 1-10
+    public int? Rating { get; set; }   
 
     public long BookId { get; set; }
     public Book Book { get; set; }
