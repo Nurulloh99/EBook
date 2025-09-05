@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Layout from './components/layout/Layout';
@@ -12,7 +11,11 @@ import BookListPage from './components/books/BookListPage';
 import BookDetailPage from './components/books/BookDetailPage';
 import AddBookPage from './components/books/AddBookPage';
 import MyBooksPage from './components/books/MyBooksPage';
-import UpdateBookPage from './components/books/UpdateBookPage'; // << IMPORTANT
+import UpdateBookPage from './components/books/UpdateBookPage';
+import GenreManagerPage from './components/genre/GenrePage';
+import LanguageManagerPage from './components/language/LanguageManagerPage';
+import RoleManagerPage from './components/role/RoleManagerPage'; // ✅ yangi qo‘shildi
+import UserManagerPage from './components/user/UserManagerPage'; // ✅ yangi qo‘shildi
 
 function App() {
   return (
@@ -25,7 +28,7 @@ function App() {
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/verify-code" element={<VerifyCodePage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          
+
           {/* Protected Routes */}
           <Route
             path="/books"
@@ -77,7 +80,55 @@ function App() {
               </ProtectedRoute>
             }
           />
-          
+
+          {/* Genre Manager */}
+          <Route
+            path="/genres"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <GenreManagerPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Language Manager */}
+          <Route
+            path="/languages"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <LanguageManagerPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Role Manager — hamma foydalanuvchi uchun */}
+          <Route
+            path="/roles"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <RoleManagerPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* User Manager — Admin va SuperAdmin uchun */}
+          <Route
+            path="/users"
+            element={
+              <ProtectedRoute roles={['Admin', 'SuperAdmin']}>
+                <Layout>
+                  <UserManagerPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+
           {/* Redirect unknown routes */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

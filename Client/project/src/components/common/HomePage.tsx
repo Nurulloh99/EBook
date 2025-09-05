@@ -36,12 +36,6 @@ const HomePage: React.FC = () => {
                 >
                   Browse Books
                 </Link>
-                <Link
-                  to="/add-book"
-                  className="bg-emerald-600 text-white px-8 py-4 rounded-lg hover:bg-emerald-700 transition-colors text-lg font-medium"
-                >
-                  Upload Your Book
-                </Link>
               </>
             ) : (
               <>

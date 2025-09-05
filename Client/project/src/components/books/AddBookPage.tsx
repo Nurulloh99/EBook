@@ -72,17 +72,25 @@ const AddBookPage: React.FC = () => {
     }
   };
 
-  const handleBookFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.type !== 'application/pdf') {
-        setError('Book file must be a PDF');
-        return;
-      }
-      setBookFile(file);
-      setError('');
+ const handleBookFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (file) {
+    // Ruxsat berilgan kitob formatlari
+    const allowedExtensions = ['pdf', 'epub', 'mobi', 'txt', 'doc', 'docx', 'rtf', 'odt'];
+
+    // Fayl nomidan kengaytmani olish
+    const fileExtension = file.name.split('.').pop()?.toLowerCase();
+
+    if (!fileExtension || !allowedExtensions.includes(fileExtension)) {
+      setError(`Book file must be one of: ${allowedExtensions.join(', ').toUpperCase()}`);
+      return;
     }
-  };
+
+    setBookFile(file);
+    setError('');
+  }
+};
+
 
   const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -243,12 +251,12 @@ const AddBookPage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Book File (PDF) *
+                Book File  *
               </label>
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-amber-400 transition-colors">
                 <input
                   type="file"
-                  accept=".pdf"
+                  accept=".pdf,.epub,.mobi,.txt,.doc,.docx,.rtf,.odt"
                   onChange={handleBookFileChange}
                   className="hidden"
                   id="book-upload"
@@ -259,7 +267,7 @@ const AddBookPage: React.FC = () => {
                 >
                   <Upload className="w-8 h-8 text-gray-400" />
                   <span className="text-sm text-gray-600">
-                    {bookFile ? bookFile.name : 'Click to upload PDF'}
+                    {bookFile ? bookFile.name : 'Click to upload book file'}
                   </span>
                 </label>
               </div>

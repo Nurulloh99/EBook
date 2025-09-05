@@ -78,8 +78,8 @@ public class UserRepository(AppDbContext _appDbContext) : IUserRepository
     public async Task<ICollection<User>> SelectAllUsersByRoleAsync(string role)
     {
         var users = await _appDbContext.Users.Include(_ => _.Role).AsNoTracking().Where(u => u.Role.RoleName == role).ToListAsync();
-        if (users is null || users.Count == 0)
-            throw new NotFoundException($"No users found with role: {role}");
+        //if (users is null || users.Count == 0)
+            //throw new NotFoundException($"No users found with role: {role}");
 
         return users;
     }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { BookOpen, User, LogOut, Plus } from 'lucide-react';
+import { BookOpen, User, LogOut, Plus, Tags, Languages, Shield } from 'lucide-react';
 
 const Header: React.FC = () => {
   const { user, logout, isAuthenticated } = useAuth();
@@ -40,6 +40,39 @@ const Header: React.FC = () => {
                 {/* ✅ faqat adminlar ko‘radi */}
                 {isAdmin && (
                   <>
+                    <Link
+                      to="/genres"
+                      className="flex items-center space-x-1 text-gray-700 hover:text-amber-600 transition-colors"
+                    >
+                      <Tags className="w-4 h-4" />
+                      <span>Genres</span>
+                    </Link>
+
+                    <Link
+                      to="/languages"
+                      className="flex items-center space-x-1 text-gray-700 hover:text-amber-600 transition-colors"
+                    >
+                      <Languages className="w-4 h-4" />
+                      <span>Languages</span>
+                    </Link>
+
+                    <Link
+                      to="/roles"
+                      className="flex items-center space-x-1 text-gray-700 hover:text-amber-600 transition-colors"
+                    >
+                      <Shield className="w-4 h-4" />
+                      <span>Roles</span>
+                    </Link>
+
+                    {/* ✅ Users tugmasi */}
+                    <Link
+                      to="/users"
+                      className="flex items-center space-x-1 text-gray-700 hover:text-amber-600 transition-colors"
+                    >
+                      <User className="w-4 h-4" />
+                      <span>Users</span>
+                    </Link>
+
                     <Link
                       to="/my-books"
                       className="text-gray-700 hover:text-amber-600 transition-colors"

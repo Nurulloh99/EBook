@@ -4,10 +4,11 @@ import { useAuth } from '../../context/AuthContext';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
+  roles?: string[]; // ✅ roles prop qo‘shildi
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, roles }) => {
+  const { isAuthenticated, loading, user } = useAuth();
 
   if (loading) {
     return (
@@ -19,6 +20,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
+  }
+
+  // Agar roles belgilangan bo‘lsa va foydalanuvchi role mos kelmasa
+  if (roles && user && !roles.includes(user.roleName)) {
+    return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;

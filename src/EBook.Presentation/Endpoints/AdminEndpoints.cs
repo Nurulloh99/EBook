@@ -34,7 +34,6 @@ public static class AdminEndpoints
             return Results.NoContent();
         }).WithName("DeleteLanguage");
 
-
         // ---------- Genres ----------
         userGroup.MapPost("/genres", [Authorize(Roles = "Admin, SuperAdmin")]
         async (GenreCreateDto genreCreateDto, [FromServices] IGenreService _genreService) =>

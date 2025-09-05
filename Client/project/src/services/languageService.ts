@@ -16,4 +16,7 @@ export const languageService = {
   async deleteLanguage(languageId: number) {
     return await api.delete(`/admin/languages/${languageId}`);
   },
+  async updateLanguage(data: { languageId: number; languageName: string }) {
+    return await api.put(`/admin/languages/${data.languageId}`, data);
+  },
 };
